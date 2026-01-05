@@ -242,5 +242,6 @@ def vector_model(df, category, vectorizer, ngram):
     )
     
     return Scores_df
+```
 
 <img width="259" height="251" alt="image" src="https://github.com/user-attachments/assets/a9f7c64e-f02a-4a81-b46f-c802f339c424" />
