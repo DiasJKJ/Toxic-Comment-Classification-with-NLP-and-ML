@@ -3,8 +3,6 @@
 <hr>
 
 ## Libraries and Data Collection 
- https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge
-
 ```python
 import numpy as np
 import pandas as pd
@@ -142,3 +140,105 @@ def frequent_words(dataset, category):
 
 
 <hr>
+## Model Building
+
+### VECTORIZATION: Using TF-IDF and Unigram Approach
+
+**Function to perform Vectorization and model building**
+
+Model Used For Each Category: KNN, Logistic Regression, SVM, CNB, BNB, DT, RF, XGBoost
+
+```python
+def vector_model(df, category, vectorizer, ngram):
+    X = df['comment_text'].fillna(' ')
+    Y = df[category]
+
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
+
+    vector = vectorizer(ngram_range=(ngram), stop_words='english')
+
+    X_train_scal = vector.fit_transform(X_train)
+    X_test_scal = vector.transform(X_test)
+    
+    #KNN
+    knn = KNeighborsClassifier(n_neighbors=5)
+    knn.fit(X_train_scal, Y_train)
+    Y_pred_knn = knn.predict(X_test_scal)
+    print(f"Knn done -> It's classification report for {category} category \n {classification_report(Y_test, Y_pred_knn)} ")
+    print("\n----------------------------------------------------------------------")
+
+    #logistic regression
+    lr = LogisticRegression()
+    lr.fit(X_train_scal, Y_train)
+    Y_pred_lr = lr.predict(X_test_scal)
+    print(f"\nLr done -> It's classification report for {category} category \n {classification_report(Y_test, Y_pred_lr)} ")
+    print("\n----------------------------------------------------------------------\n")
+
+    #Support Vector Machine
+    svm = SVC(kernel='rbf')
+    svm.fit(X_train_scal, Y_train)
+    Y_pred_svm = svm.predict(X_test_scal)
+    print(f"\nsvm done -> It's classification report for {category} category \n {classification_report(Y_test, Y_pred_svm)} ")
+    print("\n----------------------------------------------------------------------\n")
+
+    #Naive Bayes
+    cnb = ComplementNB()
+    cnb.fit(X_train_scal, Y_train)
+    Y_pred_cnb = cnb.predict(X_test_scal)
+    print(f"\ncnb done -> It's classification report for {category} category \n {classification_report(Y_test, Y_pred_cnb)} ")
+    print("\n----------------------------------------------------------------------\n")
+
+    bnb = BernoulliNB()
+    bnb.fit(X_train_scal, Y_train)
+    Y_pred_bnb = bnb.predict(X_test_scal)
+    print(f"\nbnb done -> It's classification report for {category} category \n {classification_report(Y_test, Y_pred_bnb)} ")
+    print("\n----------------------------------------------------------------------\n")
+
+    #Decision Tree Classifier
+    dt = DecisionTreeClassifier(criterion='entropy', min_samples_split=2, random_state=42)
+    dt.fit(X_train_scal, Y_train)
+    Y_pred_dt = dt.predict(X_test_scal)
+    print(f"\nDT done -> It's classification report for {category} category \n {classification_report(Y_test, Y_pred_dt)} ")
+    print("\n----------------------------------------------------------------------\n")
+
+    #Random Forest Classifier
+    rf = RandomForestClassifier(n_estimators=105, min_samples_split=2, random_state=42)
+    rf.fit(X_train_scal, Y_train)
+    Y_pred_rf = rf.predict(X_test_scal)
+    print(f"\nRF done -> It's classification report for {category} category \n {classification_report(Y_test, Y_pred_rf)} ")
+    print("\n----------------------------------------------------------------------\n")
+    
+    # XGBoost Classifier
+    xgb = XGBClassifier(
+        n_estimators=300,
+        max_depth=6,
+        learning_rate=0.1,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        eval_metric="logloss"
+    )
+    xgb.fit(X_train_scal, Y_train)
+    Y_pred_xgb = xgb.predict(X_test_scal)
+    print(f"\nXGBoost done -> It's classification report for {category} category \n {classification_report(Y_test, Y_pred_xgb)} ")
+    print("\n----------------------------------------------------------------------\n")
+
+    f1_scores = [
+        round(f1_score(Y_test, Y_pred_knn), 2),
+        round(f1_score(Y_test, Y_pred_lr), 2),
+        round(f1_score(Y_test, Y_pred_svm), 2),
+        round(f1_score(Y_test, Y_pred_cnb), 2),
+        round(f1_score(Y_test, Y_pred_bnb), 2),
+        round(f1_score(Y_test, Y_pred_dt), 2),
+        round(f1_score(Y_test, Y_pred_rf), 2),
+        round(f1_score(Y_test, Y_pred_xgb), 2)
+    ]
+
+    print(f"F1_scores for {category} category are calculated")
+
+    Scores = {f'F1_Score - {category}': f1_scores}
+    Scores_df = pd.DataFrame(
+        Scores,
+        index=['KNN', 'Logistic Regression', 'SVM', 'Complement NB', 'Bernoulli NB', 'Decision Tree', 'Random Forest', 'XGBoost']
+    )
+    
+    return Scores_df
