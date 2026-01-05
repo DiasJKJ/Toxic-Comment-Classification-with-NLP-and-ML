@@ -23,6 +23,6 @@ df_test = pd.read_csv('test.csv')
 df_train['comment_text'].fillna(' ')
 df_test['comment_text'].fillna(' ')
 ```
-![image](https://github.com/user-attachments/assets/c4e85c56-7f33-4318-b9e4-0b3455d395e4)
+![image](<img width="520" height="401" alt="image" src="https://github.com/user-attachments/assets/6f58ed22-09f0-4c11-aaba-54f22c5ca7b1" />)
 
 <hr>
