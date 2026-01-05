@@ -27,3 +27,29 @@ df_test['comment_text'].fillna(' ')
 
 
 <hr>
+
+<hr>
+
+## Data Pre-Procesing - Text Pre-Processing Using Regular Expressions
+
+- Removing \n characters 
+- Removing Aplha-Numeric Characters
+- Removing Punctuations
+- Removing Non Ascii Characters
+
+```python
+import re
+import string
+
+remove_n = lambda x: re.sub("\n", "", x)
+
+remove_alpha_num = lambda x: re.sub("\w*\d\w*", '', x)
+
+remove_pun = lambda x: re.sub(r"([^\w\s]|_)", '', x.lower())
+
+remove_non_ascii = lambda x: re.sub(r'[^\x00-\x7f]',r' ', x)
+
+df_train['comment_text'] = df_train['comment_text'].map(remove_n).map(remove_alpha_num).map(remove_pun).map(remove_non_ascii)
+df_test['comment_text'] = df_test['comment_text'].map(remove_n).map(remove_alpha_num).map(remove_pun).map(remove_non_ascii)
+```
+<hr>
