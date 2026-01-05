@@ -245,3 +245,37 @@ def vector_model(df, category, vectorizer, ngram):
 ```
 
 <img width="259" height="251" alt="image" src="https://github.com/user-attachments/assets/a9f7c64e-f02a-4a81-b46f-c802f339c424" />
+
+
+#### Visualization of F1-Score of all Categories
+```python
+# Visualization of F1-Score of all categories
+plt.figure(figsize=(10,10))
+sns.lineplot(data=result, markers=True)
+plt.legend(loc='best')
+```
+<img width="875" height="813" alt="image" src="https://github.com/user-attachments/assets/59b017e7-a646-425c-a89c-862b1fc4b6c5" />
+
+Model Selected: Logistic Regression
+  ```python
+  def getfiles(df, label):
+    x = df.comment_text.fillna(' ')
+    y = df[label]
+    
+    tfv_f = TfidfVectorizer(ngram_range=(1,1), stop_words='english')
+    X_vect = tfv_f.fit_transform(x)
+    
+    with open(f'{label + "_vect"}.pkl', 'wb') as f:
+        pickle.dump(tfv_f, f)
+    
+    log = LogisticRegression()
+    log.fit(X_vect, y)
+    
+    with open(f'{label + "_model"}.pkl', 'wb') as f:
+        pickle.dump(log, f)
+  list_c = ['toxic', 'severe_toxic', 'threat', 'obscene', 'insult', 'identity_hate']
+  list_d = [df_toxic, df_severe_toxic, df_threat, df_obscene, df_insult, df_identity_hate]
+  for i, j in zip(list_d, list_c):
+      getfiles(i, j)
+  ```
+<hr>
