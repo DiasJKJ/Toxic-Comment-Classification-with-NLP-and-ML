@@ -12,7 +12,7 @@ thresholds = {
     'threat': 0.45,
     'obscene': 0.55,
     'insult': 0.55,
-    'identity_hate': 0.5
+    'identity_hate': 0.62
 }
 
 for cat in categories:
